@@ -1,0 +1,65 @@
+.billing-summary {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.summary-card {
+  background: white;
+  border-radius: 10px;
+  padding: 16px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  border: 1px solid #e8eaf6;
+}
+
+.summary-card.total {
+  border-left: 4px solid #1a237e;
+}
+
+.summary-card.paid {
+  border-left: 4px solid #2e7d32;
+}
+
+.summary-card.pending {
+  border-left: 4px solid #e65100;
+}
+
+.summary-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #888;
+  text-transform: uppercase;
+}
+
+.summary-amount {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1a237e;
+}
+
+.summary-card.paid .summary-amount {
+  color: #2e7d32;
+}
+
+.summary-card.pending .summary-amount {
+  color: #e65100;
+}
+
+.amount {
+  font-weight: 600;
+  color: #1a237e;
+}
+
+.search-bar {
+  margin-bottom: 0;
+}
+
+@media (max-width: 768px) {
+  .billing-summary {
+    grid-template-columns: 1fr;
+  }
+}

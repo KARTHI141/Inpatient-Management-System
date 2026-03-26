@@ -1,0 +1,135 @@
+<div class="page-header">
+  <h2>Billing</h2>
+  <a routerLink="/billing/new" class="btn btn-primary">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+    </svg>
+    Create Bill
+  </a>
+</div>
+
+<div *ngIf="message" class="alert alert-success">{{ message }}</div>
+
+<!-- Billing Summary -->
+<div class="billing-summary">
+  <div class="summary-card total">
+    <span class="summary-label">Total</span>
+    <span class="summary-amount">&#8377;{{ getTotalAmount() | number:'1.0-0' }}</span>
+  </div>
+  <div class="summary-card paid">
+    <span class="summary-label">Paid</span>
+    <span class="summary-amount">&#8377;{{ getPaidAmount() | number:'1.0-0' }}</span>
+  </div>
+  <div class="summary-card pending">
+    <span class="summary-label">Pending</span>
+    <span class="summary-amount">&#8377;{{ getPendingAmount() | number:'1.0-0' }}</span>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-body">
+    <div class="search-bar">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+      </svg>
+      <input type="text" class="form-control" placeholder="Search by patient name..." [(ngModel)]="searchTerm" (input)="search()">
+    </div>
+  </div>
+
+  <div class="table-responsive">
+    <table class="table" *ngIf="filteredRecords.length > 0">
+      <thead>
+        <tr>
+          <th>Bill ID</th>
+          <th>Patient</th>
+          <th>Description</th>
+          <th>Amount</th>
+          <th>Date</th>
+          <th>Payment</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let record of filteredRecords">
+          <td><strong>#{{ record.billingId }}</strong></td>
+          <td>{{ record.patientName }}</td>
+          <td>{{ record.description }}</td>
+          <td class="amount">&#8377;{{ record.amount | number:'1.2-2' }}</td>
+          <td>{{ record.billingDate }}</td>
+          <td>{{ record.paymentMethod || '-' }}</td>
+          <td>
+            <span class="badge" [ngClass]="{
+              'badge-paid': record.status === 'PAID',
+              'badge-pending': record.status === 'PENDING',
+              'badge-overdue': record.status === 'OVERDUE'
+            }">{{ record.status }}</span>
+          </td>
+          <td>
+            <div class="action-buttons">
+              <button *ngIf="record.status === 'PENDING'" class="btn-icon view" title="Mark as Paid" (click)="confirmPay(record.billingId!)">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <line x1="12" y1="1" x2="12" y2="23"/>
+                  <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                </svg>
+              </button>
+              <a [routerLink]="['/billing/edit', record.billingId]" class="btn-icon edit" title="Edit">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                </svg>
+              </a>
+              <button class="btn-icon delete" title="Delete" (click)="confirmDelete(record.billingId!)">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="3 6 5 6 21 6"/>
+                  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                </svg>
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="empty-state" *ngIf="filteredRecords.length === 0">
+    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+      <line x1="12" y1="1" x2="12" y2="23"/>
+      <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+    </svg>
+    <h4>No billing records found</h4>
+    <p>Create a new bill to get started</p>
+  </div>
+</div>
+
+<!-- Pay Confirmation -->
+<div class="confirm-overlay" *ngIf="payId !== null" (click)="cancelPay()">
+  <div class="confirm-dialog" (click)="$event.stopPropagation()">
+    <h4>Record Payment</h4>
+    <div class="form-group">
+      <label>Payment Method</label>
+      <select class="form-control" [(ngModel)]="paymentMethod">
+        <option value="CASH">Cash</option>
+        <option value="CARD">Card</option>
+        <option value="INSURANCE">Insurance</option>
+        <option value="UPI">UPI</option>
+      </select>
+    </div>
+    <div class="confirm-actions">
+      <button class="btn btn-outline" (click)="cancelPay()">Cancel</button>
+      <button class="btn btn-success" (click)="onPay()">Confirm Payment</button>
+    </div>
+  </div>
+</div>
+
+<!-- Delete Confirmation -->
+<div class="confirm-overlay" *ngIf="deleteId !== null" (click)="cancelDelete()">
+  <div class="confirm-dialog" (click)="$event.stopPropagation()">
+    <h4>Confirm Delete</h4>
+    <p>Are you sure you want to delete this billing record?</p>
+    <div class="confirm-actions">
+      <button class="btn btn-outline" (click)="cancelDelete()">Cancel</button>
+      <button class="btn btn-danger" (click)="onDelete()">Delete</button>
+    </div>
+  </div>
+</div>

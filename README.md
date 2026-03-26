@@ -1,27 +1,107 @@
-# PatientManagement
+# Inpatient Management System
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 16.2.6.
+A full-stack healthcare application to manage inpatient records, admissions, and billing workflows. Built with **Spring Boot**, **Angular**, **JPA/Hibernate**, and **Oracle/H2 Database**.
 
-## Development server
+## Tech Stack
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+| Layer | Technology |
+|-------|-----------|
+| Backend | Java 17, Spring Boot 3.2.2, Spring Data JPA |
+| Frontend | Angular 16, TypeScript, Bootstrap 5 |
+| Database | H2 (dev/demo), Oracle DB (production) |
+| Build | Maven, frontend-maven-plugin |
+| Containerization | Docker, Docker Compose |
 
-## Code scaffolding
+## Features
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+- **Patient Management** — Register, update, delete, and search patients
+- **Medical Records** — Create and manage patient medical records with doctor assignments
+- **Admission Management** — Track patient admissions, ward assignments, and discharges
+- **Billing Workflow** — Generate bills, track payments, and manage billing statuses
+- **Dashboard** — Real-time overview with key metrics (patients, admissions, revenue)
+- **Search** — Full-text search across all modules
+- **RESTful APIs** — Clean REST API design with proper error handling
+- **Responsive UI** — Professional healthcare-themed interface with sidebar navigation
 
-## Build
+## Architecture
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+```
+├── Backend (Spring Boot)
+│   ├── Controllers (REST APIs)
+│   ├── Services (Business Logic)
+│   ├── Repositories (JPA Data Access)
+│   ├── Entities (JPA Entities)
+│   └── Config (CORS, Exception Handling, Data Seeder)
+│
+├── Frontend (Angular 16)
+│   ├── Dashboard
+│   ├── Patient Management (List + Form)
+│   ├── Medical Records (List + Form)
+│   ├── Admission Management (List + Form)
+│   └── Billing Management (List + Form)
+│
+└── Database
+    ├── H2 In-Memory (Default)
+    └── Oracle DB (Production Profile)
+```
 
-## Running unit tests
+## Getting Started
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+### Prerequisites
+- Java 17+
+- Node.js 18+
+- Maven 3.8+
 
-## Running end-to-end tests
+### Run Locally
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+```bash
+# Install frontend dependencies
+npm install
 
-## Further help
+# Start Angular dev server (port 4200)
+npm start
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+# In another terminal, start Spring Boot (port 8080)
+mvn spring-boot:run
+```
+
+### Build Single JAR (Full-Stack)
+
+```bash
+# Builds Angular + Spring Boot into a single executable JAR
+mvn clean package
+
+# Run the JAR
+java -jar target/InpatientManagement-0.0.1.jar
+```
+
+### Docker
+
+```bash
+# Build and run with Docker
+docker build -t inpatient-management .
+docker run -p 8080:8080 inpatient-management
+
+# Or use Docker Compose
+docker-compose up --build
+```
+
+### Oracle DB Profile
+
+```bash
+java -jar target/InpatientManagement-0.0.1.jar --spring.profiles.active=oracle
+```
+
+## API Endpoints
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/dashboard` | Dashboard statistics |
+| GET/POST | `/api/patients` | List/Create patients |
+| GET/PUT/DELETE | `/api/patients/{id}` | Get/Update/Delete patient |
+| GET/POST | `/api/records` | List/Create medical records |
+| GET/PUT/DELETE | `/api/records/{id}` | Get/Update/Delete record |
+| GET/POST | `/api/admissions` | List/Create admissions |
+| PUT | `/api/admissions/{id}/discharge` | Discharge patient |
+| GET/POST | `/api/billing` | List/Create billing records |
+| PUT | `/api/billing/{id}/pay` | Mark bill as paid |

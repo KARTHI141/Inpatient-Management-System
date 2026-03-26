@@ -1,0 +1,65 @@
+<div class="page-header">
+  <h2>{{ isEdit ? 'Edit Medical Record' : 'New Medical Record' }}</h2>
+  <a routerLink="/records" class="btn btn-outline">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>
+    </svg>
+    Back to List
+  </a>
+</div>
+
+<div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+
+<div class="card">
+  <div class="card-body">
+    <form (ngSubmit)="onSubmit()">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Patient ID *</label>
+          <input type="number" class="form-control" [(ngModel)]="record.patientId" name="patientId" required placeholder="Patient ID">
+        </div>
+        <div class="form-group">
+          <label>Doctor ID</label>
+          <input type="number" class="form-control" [(ngModel)]="record.doctorId" name="doctorId" placeholder="Doctor ID">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Doctor Name *</label>
+          <input type="text" class="form-control" [(ngModel)]="record.doctorName" name="doctorName" required placeholder="Doctor name">
+        </div>
+        <div class="form-group">
+          <label>Disease *</label>
+          <input type="text" class="form-control" [(ngModel)]="record.disease" name="disease" required placeholder="Diagnosis">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Treatment *</label>
+        <input type="text" class="form-control" [(ngModel)]="record.treatment" name="treatment" required placeholder="Treatment plan">
+      </div>
+
+      <div class="form-group">
+        <label>Doctor Notes</label>
+        <textarea class="form-control" [(ngModel)]="record.doctorNotes" name="doctorNotes" rows="3" placeholder="Additional notes"></textarea>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Room Number</label>
+          <input type="number" class="form-control" [(ngModel)]="record.roomNumber" name="roomNumber" placeholder="Room number">
+        </div>
+        <div class="form-group">
+          <label>Bed Number</label>
+          <input type="number" class="form-control" [(ngModel)]="record.bedNumber" name="bedNumber" placeholder="Bed number">
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="btn btn-outline" routerLink="/records">Cancel</button>
+        <button type="submit" class="btn btn-primary">{{ isEdit ? 'Update Record' : 'Create Record' }}</button>
+      </div>
+    </form>
+  </div>
+</div>

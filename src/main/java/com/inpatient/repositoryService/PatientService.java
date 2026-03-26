@@ -13,40 +13,52 @@ import com.inpatient.repository.PatientRepository;
 public class PatientService {
 
 	@Autowired
-	public PatientRepository patientRepository;
+	private PatientRepository patientRepository;
 
 	public List<Patient> getAllPatients() {
 		return patientRepository.findAll();
 	}
 
-	public void addPatient(Patient patient) {
-		patientRepository.save(patient);
+	public Patient addPatient(Patient patient) {
+		return patientRepository.save(patient);
 	}
 
 	public Patient getPatient(int patientId) {
-		return patientRepository.findById(patientId).orElse(new Patient());
-	}
-	public Patient setPatient(int patientId, Patient patient) {
-	    patient.setPatientId(patientId);
-	    return patientRepository.save(patient);
+		return patientRepository.findById(patientId)
+				.orElseThrow(() -> new RuntimeException("Patient not found with id: " + patientId));
 	}
 
+	public Patient setPatient(int patientId, Patient patient) {
+		Patient existing = getPatient(patientId);
+		existing.setName(patient.getName());
+		existing.setAge(patient.getAge());
+		existing.setGender(patient.getGender());
+		existing.setPhone(patient.getPhone());
+		existing.setAddress(patient.getAddress());
+		return patientRepository.save(existing);
+	}
 
 	public void deletePatient(int patientId) {
 		patientRepository.deleteById(patientId);
 	}
 
-	public void load() {
+	public long count() {
+		return patientRepository.count();
+	}
 
-		List<Patient> patients = new ArrayList<>(List.of(
-				new Patient(1, "Shreedharma", 22, "Male", 1),
-				new Patient(2, "Antony", 60, "Male", 2), 
-				new Patient(3, "Tanya", 22, "Female", 3)));
-
-		patientRepository.saveAll(patients);
+	public void loadSeedData() {
+		if (patientRepository.count() == 0) {
+			List<Patient> patients = new ArrayList<>(List.of(
+					new Patient("Shreedharma", 22, "Male", "9876543210", "Chennai, India"),
+					new Patient("Antony", 60, "Male", "9876543211", "Mumbai, India"),
+					new Patient("Tanya", 22, "Female", "9876543212", "Delhi, India"),
+					new Patient("Rajesh Kumar", 45, "Male", "9876543213", "Bangalore, India"),
+					new Patient("Priya Sharma", 35, "Female", "9876543214", "Hyderabad, India")));
+			patientRepository.saveAll(patients);
+		}
 	}
 
 	public List<Patient> search(String keyword) {
-		return patientRepository.findByNameContaining(keyword);
+		return patientRepository.findByNameContainingIgnoreCase(keyword);
 	}
 }

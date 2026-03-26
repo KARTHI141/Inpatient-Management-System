@@ -1,0 +1,79 @@
+<div class="page-header">
+  <h2>{{ isEdit ? 'Edit Admission' : 'New Admission' }}</h2>
+  <a routerLink="/admissions" class="btn btn-outline">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>
+    </svg>
+    Back to List
+  </a>
+</div>
+
+<div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+
+<div class="card">
+  <div class="card-body">
+    <form (ngSubmit)="onSubmit()">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Patient ID *</label>
+          <input type="number" class="form-control" [(ngModel)]="admission.patientId" name="patientId" required placeholder="Patient ID">
+        </div>
+        <div class="form-group">
+          <label>Patient Name *</label>
+          <input type="text" class="form-control" [(ngModel)]="admission.patientName" name="patientName" required placeholder="Patient name">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Ward *</label>
+          <select class="form-control" [(ngModel)]="admission.ward" name="ward" required>
+            <option value="">Select Ward</option>
+            <option value="Cardiology">Cardiology</option>
+            <option value="Neurology">Neurology</option>
+            <option value="Orthopedics">Orthopedics</option>
+            <option value="Pulmonology">Pulmonology</option>
+            <option value="Endocrinology">Endocrinology</option>
+            <option value="General">General</option>
+            <option value="ICU">ICU</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Status *</label>
+          <select class="form-control" [(ngModel)]="admission.status" name="status" required>
+            <option value="ADMITTED">Admitted</option>
+            <option value="DISCHARGED">Discharged</option>
+            <option value="TRANSFERRED">Transferred</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Admission Date *</label>
+          <input type="date" class="form-control" [(ngModel)]="admission.admissionDate" name="admissionDate" required>
+        </div>
+        <div class="form-group">
+          <label>Discharge Date</label>
+          <input type="date" class="form-control" [(ngModel)]="admission.dischargeDate" name="dischargeDate">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Room Number *</label>
+          <input type="number" class="form-control" [(ngModel)]="admission.roomNumber" name="roomNumber" required placeholder="Room number">
+        </div>
+        <div class="form-group">
+          <label>Bed Number *</label>
+          <input type="number" class="form-control" [(ngModel)]="admission.bedNumber" name="bedNumber" required placeholder="Bed number">
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="btn btn-outline" routerLink="/admissions">Cancel</button>
+        <button type="submit" class="btn btn-primary">{{ isEdit ? 'Update Admission' : 'Create Admission' }}</button>
+      </div>
+    </form>
+  </div>
+</div>
